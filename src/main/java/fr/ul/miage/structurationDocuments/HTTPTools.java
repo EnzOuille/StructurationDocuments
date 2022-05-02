@@ -1,5 +1,8 @@
 package fr.ul.miage.structurationDocuments;//package Nom-de-votre-paquet ;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,12 +22,15 @@ public class HTTPTools {
 	// dernière requête HTTP
 	private long last;
 
+	public HTTPTools(){
+
+	}
 	/**
 	 * Envoi une requête GET
 	 * @param URL de la requête
 	 * @return reponse
 	 */
-	public String sendGet(String url) {
+	public JsonObject sendGet(String url) {
 		// vérifie le temps écoulé depuis la requête précédente
 		while (System.currentTimeMillis() - last < mt);
 		last = System.currentTimeMillis();
@@ -46,7 +52,8 @@ public class HTTPTools {
 			// fermeture du lecteur et retour
 			br.close();
 			isr.close();
-			return result.toString();
+			JsonObject jsonObject = new JsonParser().parse(result.toString()).getAsJsonObject();
+			return jsonObject;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
