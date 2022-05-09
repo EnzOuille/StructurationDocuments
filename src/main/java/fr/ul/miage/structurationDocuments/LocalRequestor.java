@@ -25,8 +25,18 @@ public class LocalRequestor {
     public String getTag(String param) {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_tag");
         StringBuilder stringBuilder = new StringBuilder();
+        boolean hasResult = false;
         for (Document temp : collection.find(eq("name", param))) {
             stringBuilder.append(temp.toJson()).append("\n");
+            hasResult = true;
+        }
+        if (!hasResult){
+            JsonObject temp = this.api.getTag(param);
+            if (temp != null){
+                collection.insertOne(Document.parse(temp.toString()));
+                return temp.toString();
+            }
+            return "Aucuns résultats";
         }
         return stringBuilder.toString();
     }
