@@ -47,40 +47,40 @@ public class LocalRequestor {
         }
     }
 
-    public String getAlbum(String param) {
-        String url = this.buildUrl("album.getinfo", "album=" + param);
-        return httpTools.sendGet(url);
-    }
-
-    public String getTag(String param) {
-        String url = this.buildUrl("tag.getinfo", "tag=" + param);
-        return httpTools.sendGet(url);
-    }
-
-    public String topCountryTracks(String param) {
-        String url = this.buildUrl("geo.getTopTracks", "country=" + param);
-        return httpTools.sendGet(url);
-    }
-
-    public String topCountryArtists(String param) {
-        String url = this.buildUrl("geo.getTopArtists", "country=" + param);
-        return httpTools.sendGet(url);
-    }
-
-    public String topArtists(String param) {
-        String url = this.buildUrl("chart.getTopArtists", "");
-        return httpTools.sendGet(url);
-    }
-
-    public String topTags(String param) {
-        String url = this.buildUrl("chart.getTopTags", "");
-        return httpTools.sendGet(url);
-    }
-
-    public String topTracks(String param) {
-        String url = this.buildUrl("chart.getTopTracks", "");
-        return httpTools.sendGet(url);
-    }
+//    public String getAlbum(String param) {
+//        String url = this.buildUrl("album.getinfo", "album=" + param);
+//        return httpTools.sendGet(url);
+//    }
+//
+//    public String getTag(String param) {
+//        String url = this.buildUrl("tag.getinfo", "tag=" + param);
+//        return httpTools.sendGet(url);
+//    }
+//
+//    public String topCountryTracks(String param) {
+//        String url = this.buildUrl("geo.getTopTracks", "country=" + param);
+//        return httpTools.sendGet(url);
+//    }
+//
+//    public String topCountryArtists(String param) {
+//        String url = this.buildUrl("geo.getTopArtists", "country=" + param);
+//        return httpTools.sendGet(url);
+//    }
+//
+//    public String topArtists(String param) {
+//        String url = this.buildUrl("chart.getTopArtists", "");
+//        return httpTools.sendGet(url);
+//    }
+//
+//    public String topTags(String param) {
+//        String url = this.buildUrl("chart.getTopTags", "");
+//        return httpTools.sendGet(url);
+//    }
+//
+//    public String topTracks(String param) {
+//        String url = this.buildUrl("chart.getTopTracks", "");
+//        return httpTools.sendGet(url);
+//    }
 
     public String formatResultString(String param){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
