@@ -1,6 +1,7 @@
 package fr.ul.miage.structurationDocuments.controller;
 
 import fr.ul.miage.structurationDocuments.App;
+import fr.ul.miage.structurationDocuments.singleton.ConnectionBDD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,7 +26,7 @@ public class ConnectionController {
      * @param actionEvent évènement
      */
     public void start_connection(ActionEvent actionEvent) {
-        String connection_type = user_combobox.getValue();
+        MainController.user= user_combobox.getValue();
         App.changeScene("/javafx/main.fxml");
     }
 }

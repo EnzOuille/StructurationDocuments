@@ -14,7 +14,7 @@ public class ConnectionBDD {
     private final String url = "mongodb://localhost:27017";
     private final String API_KEY = "4fe5bfe5cdb20258458cbb9a8232bfac";
 
-    private ConnectionBDD() {
+    public ConnectionBDD() {
         this.connection = MongoClients.create(url);
         MongoDatabase database = connection.getDatabase("miage");
         this.collection = database.getCollection("paris");
