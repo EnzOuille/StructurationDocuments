@@ -10,22 +10,21 @@ public class ConnectionBDD {
 
     private static ConnectionBDD instance;
     private final MongoClient connection;
-    private final MongoCollection<Document> collection;
     private final String url = "mongodb://localhost:27017";
-    private final String API_KEY = "4fe5bfe5cdb20258458cbb9a8232bfac";
+    private final MongoDatabase database;
+    //private final String API_KEY = "4fe5bfe5cdb20258458cbb9a8232bfac";
 
     public ConnectionBDD() {
         this.connection = MongoClients.create(url);
-        MongoDatabase database = connection.getDatabase("miage");
-        this.collection = database.getCollection("paris");
+        database = connection.getDatabase("miage");
+    }
+
+    public MongoDatabase getDatabase() {
+        return database;
     }
 
     public MongoClient getConnection() {
         return connection;
-    }
-
-    public MongoCollection<Document> getCollection() {
-        return collection;
     }
 
     public static ConnectionBDD getInstance() {

@@ -8,6 +8,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import fr.ul.miage.structurationDocuments.singleton.ConnectionBDD;
 import org.bson.Document;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -15,30 +16,15 @@ import static com.mongodb.client.model.Filters.eq;
 public class LocalRequestor {
 
     private ApiRequestor api;
-    private String uri = "mongodb://localhost:27017";
-    private String database_name = "SD2022_projet";
-    private MongoClient mongoclient;
-    private MongoDatabase database;
+    private ConnectionBDD connection;
 
     public LocalRequestor(){
         this.api = new ApiRequestor();
-        try {
-            this.mongoclient = MongoClients.create(uri);
-            this.database = mongoclient.getDatabase(database_name);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        //        String uri = "mongodb://localhost:27017";
-//        try(MongoClient mongoClient = MongoClients.create(uri)){
-//            MongoDatabase database = mongoClient.getDatabase("miage");
-//            MongoCollection<Document> collection = database.getCollection("paris");
-//            Document doc = collection.find(eq("category", "restaurant")).first();
-//            assert doc != null;
-//            System.out.println(doc.toJson());
+        this.connection = new ConnectionBDD();
     }
 
     public String getArtist(String param) {
-        MongoCollection<Document> collection = database.getCollection("GECCT_artiste");
+        MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_artiste");
         Document doc = collection.find(eq("name", param)).first();
         if (doc != null){
             return formatResultString(doc.toJson());
