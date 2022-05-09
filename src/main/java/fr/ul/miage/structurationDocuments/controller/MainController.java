@@ -1,6 +1,17 @@
 package fr.ul.miage.structurationDocuments.controller;
 
+import com.google.gson.Gson;
+import fr.ul.miage.structurationDocuments.ApiRequestor;
 import fr.ul.miage.structurationDocuments.App;
+import fr.ul.miage.structurationDocuments.LocalRequestor;
+import fr.ul.miage.structurationDocuments.modele.album.AlbumResult;
+import fr.ul.miage.structurationDocuments.modele.artist.ArtistResult;
+import fr.ul.miage.structurationDocuments.modele.tag.TagResult;
+import fr.ul.miage.structurationDocuments.modele.topartists.TopArtistsCountryResult;
+import fr.ul.miage.structurationDocuments.modele.topartists.TopArtistsResult;
+import fr.ul.miage.structurationDocuments.modele.toptags.TopTagsResult;
+import fr.ul.miage.structurationDocuments.modele.toptracks.TopTracksCountryResult;
+import fr.ul.miage.structurationDocuments.modele.toptracks.TopTracksResult;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.scene.control.*;
@@ -11,18 +22,22 @@ public class MainController {
     public Tab tab_mod;
     public Tab tab_admin;
     public TabPane main_onglet;
-    public ListView listview_first;
+    public ListView<String> listview_first;
     public TextField input_top_country_artist;
     public Button input_top_tracks;
-    public Button input_top_country_tracks;
+    public TextField input_top_country_tracks;
     public Button input_top_artists;
     public Button input_top_tags;
-    public ListView listview_second;
+    public ListView<String> listview_second;
     public TextField input_tag;
     public TextField input_album;
     public TextField input_artiste;
+    private LocalRequestor localRequestor;
+    private ApiRequestor apiRequestor;
 
     public void initialize() {
+        this.localRequestor = new LocalRequestor();
+        this.apiRequestor = new ApiRequestor();
         switch (user) {
             case "utilisateur":
                 this.main_onglet.getTabs().removeAll(tab_admin,tab_mod);
@@ -44,23 +59,57 @@ public class MainController {
     }
 
     public void generate_tag_results(ActionEvent actionEvent) {
+        String content = ((TextField)actionEvent.getSource()).getText();
+        if (!content.isEmpty()) {
+            TagResult tag = new Gson().fromJson(this.apiRequestor.getTag(content).toString(), TagResult.class);
+            this.listview_first.getItems().add(tag.toString());
+        }
     }
 
     public void generate_album_results(ActionEvent actionEvent) {
+        String content = ((TextField)actionEvent.getSource()).getText();
+        if (!content.isEmpty()) {
+            AlbumResult album = new Gson().fromJson(this.apiRequestor.getAlbum(content).toString(), AlbumResult.class);
+            this.listview_first.getItems().add(album.toString());
+        }
     }
 
     public void generate_artiste_results(ActionEvent actionEvent) {
+        String content = ((TextField)actionEvent.getSource()).getText();
+        if (!content.isEmpty()) {
+            ArtistResult artist = new Gson().fromJson(this.apiRequestor.getArtist(content).toString(), ArtistResult.class);
+            this.listview_first.getItems().add(artist.toString());
+        }
     }
 
     public void generate_topTracks_results(ActionEvent actionEvent) {
+        TopTracksResult topTracks = new Gson().fromJson(this.apiRequestor.topTracks().toString(), TopTracksResult.class);
+        this.listview_second.getItems().add(topTracks.toString());
     }
 
     public void generate_topCountryTracks_results(ActionEvent actionEvent) {
+        String content = ((TextField)actionEvent.getSource()).getText();
+        if (!content.isEmpty()) {
+            TopTracksCountryResult topTracksCountry = new Gson().fromJson(this.apiRequestor.topCountryTracks(content).toString(), TopTracksCountryResult.class);
+            this.listview_second.getItems().add(topTracksCountry.toString());
+        }
     }
 
     public void generate_topArtists_results(ActionEvent actionEvent) {
+        TopArtistsResult topArtists = new Gson().fromJson(this.apiRequestor.topArtists().toString(), TopArtistsResult.class);
+        this.listview_second.getItems().add(topArtists.toString());
     }
 
     public void generate_topTags_results(ActionEvent actionEvent) {
+        TopTagsResult topTags = new Gson().fromJson(this.apiRequestor.topTags().toString(), TopTagsResult.class);
+        this.listview_second.getItems().add(topTags.toString());
+    }
+
+    public void generate_topCountryArtists_results(ActionEvent actionEvent) {
+        String content = ((TextField)actionEvent.getSource()).getText();
+        if (!content.isEmpty()) {
+            TopArtistsCountryResult topArtistsCountry = new Gson().fromJson(this.apiRequestor.topCountryArtists(content).toString(), TopArtistsCountryResult.class);
+            this.listview_second.getItems().add(topArtistsCountry.toString());
+        }
     }
 }

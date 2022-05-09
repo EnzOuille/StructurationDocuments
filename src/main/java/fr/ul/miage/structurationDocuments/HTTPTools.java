@@ -27,7 +27,7 @@ public class HTTPTools {
 	}
 	/**
 	 * Envoi une requête GET
-	 * @param URL de la requête
+	 * @param url de la requête
 	 * @return reponse
 	 */
 	public JsonObject sendGet(String url) {
@@ -52,10 +52,7 @@ public class HTTPTools {
 			// fermeture du lecteur et retour
 			br.close();
 			isr.close();
-			JsonObject jsonObject = new JsonParser().parse(result.toString()).getAsJsonObject();
-			return jsonObject;
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			return new JsonParser().parse(result.toString()).getAsJsonObject();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
