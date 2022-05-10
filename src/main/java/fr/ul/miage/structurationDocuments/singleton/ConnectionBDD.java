@@ -16,7 +16,7 @@ public class ConnectionBDD {
 
     public ConnectionBDD() {
         this.connection = MongoClients.create(url);
-        database = connection.getDatabase("miage");
+        database = connection.getDatabase("SD2022_projet");
     }
 
     public MongoDatabase getDatabase() {
