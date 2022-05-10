@@ -32,10 +32,16 @@ public class MainController {
     public TextField input_tag;
     public TextField input_album;
     public TextField input_artiste;
+    public Button btn_confirm;
+    public ComboBox<String> combobox_type;
+    public TextField input_type;
+    public ComboBox<Integer> combobox_note;
     private LocalRequestor localRequestor;
     private ApiRequestor apiRequestor;
 
     public void initialize() {
+        combobox_type.getItems().addAll("tag","album","track");
+        combobox_note.getItems().addAll(0,1,2,3,4,5,6,7,8,9,10);
         this.localRequestor = new LocalRequestor();
         this.apiRequestor = new ApiRequestor();
         switch (user) {
@@ -111,6 +117,20 @@ public class MainController {
         if (!content.isEmpty()) {
             TopArtistsCountryResult topArtistsCountry = new Gson().fromJson(this.apiRequestor.topCountryArtists(content), TopArtistsCountryResult.class);
             this.listview_second.getItems().add(topArtistsCountry.toString());
+        }
+    }
+
+    public void confirmRecommandation(ActionEvent actionEvent) {
+        String type_value = this.input_type.getText();
+        String note = String.valueOf(this.combobox_note.getItems().get(0));
+        if (type_value.isEmpty() || note.isEmpty()) { return; }
+        switch (this.combobox_type.getItems().get(0)) {
+            case "tag":
+                break;
+            case "album":
+                break;
+            case "track":
+                break;
         }
     }
 }
