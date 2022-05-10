@@ -6,8 +6,6 @@ public class AlbumResult {
 
     @Override
     public String toString() {
-        return "AlbumResult{" +
-                "album=" + album +
-                '}';
+        return String.format("Album Result: \n%s",album);
     }
 }

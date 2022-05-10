@@ -8,8 +8,6 @@ public class TopArtistsResult {
 
     @Override
     public String toString() {
-        return "TopArtistsResult{" +
-                "topArtists=" + artists +
-                '}';
+        return String.format("Top 10 Artists: \n\t\t%s",artists.listToString());
     }
 }

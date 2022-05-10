@@ -41,6 +41,8 @@ public class Tag {
 
     @Override
     public String toString() {
-        return String.format("name: %s\ntotal: %s\nreach: %s\nwiki: %s",name,total,reach,wiki.toString());
+        return String.format("%s\nThe number of users that have used this tag: %s\n" +
+                "The total number of times this tag has been used: %s\n" +
+                "Description : %s\n",name,reach,total,wiki.getContent());
     }
 }

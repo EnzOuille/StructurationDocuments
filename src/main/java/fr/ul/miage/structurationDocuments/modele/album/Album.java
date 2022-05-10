@@ -1,5 +1,8 @@
 package fr.ul.miage.structurationDocuments.modele.album;
 
+import fr.ul.miage.structurationDocuments.modele.Tracks;
+import fr.ul.miage.structurationDocuments.modele.track.Track;
+
 import java.util.ArrayList;
 
 public class Album {
@@ -7,15 +10,10 @@ public class Album {
     private String artist;
     private String name;
     private WikiAlbum wiki;
-    private ArrayList<Track> tracks;
+    private Tracks tracks;
 
     @Override
     public String toString() {
-        return "Album{" +
-                "artist='" + artist + '\'' +
-                ", name='" + name + '\'' +
-                ", wiki=" + wiki +
-                ", tracks=" + tracks +
-                '}';
+        return String.format("Name: %s\nArtist: %s\nDuration: %s\n",name,artist,tracks.getTotalDuration());
     }
 }

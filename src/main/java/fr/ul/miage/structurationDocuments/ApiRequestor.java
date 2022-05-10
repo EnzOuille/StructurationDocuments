@@ -29,27 +29,27 @@ public class ApiRequestor {
     }
 
     public JsonObject topCountryTracks(String param) {
-        String url = this.buildUrl("geo.getTopTracks", "country=" + param);
+        String url = this.buildUrl("geo.getTopTracks", "country=" + param + "&limit=10");
         return httpTools.sendGet(url);
     }
 
     public JsonObject topCountryArtists(String param) {
-        String url = this.buildUrl("geo.getTopArtists", "country=" + param);
+        String url = this.buildUrl("geo.getTopArtists", "country=" + param + "&limit=10");
         return httpTools.sendGet(url);
     }
 
     public JsonObject topArtists() {
-        String url = this.buildUrl("chart.getTopArtists", "");
+        String url = this.buildUrl("chart.getTopArtists", "limit=10");
         return httpTools.sendGet(url);
     }
 
     public JsonObject topTags() {
-        String url = this.buildUrl("chart.getTopTags", "");
+        String url = this.buildUrl("chart.getTopTags", "limit=10");
         return httpTools.sendGet(url);
     }
 
     public JsonObject topTracks() {
-        String url = this.buildUrl("chart.getTopTracks", "");
+        String url = this.buildUrl("chart.getTopTracks", "limit=10");
         return httpTools.sendGet(url);
     }
 

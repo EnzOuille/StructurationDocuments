@@ -8,8 +8,6 @@ public class TopTracksCountryResult {
 
     @Override
     public String toString() {
-        return "TopTracksCountryResult{" +
-                "tracks=" + tracks +
-                '}';
+        return String.format("Top 10 Tracks by Country: \n\t\t%s",tracks.listToString());
     }
 }

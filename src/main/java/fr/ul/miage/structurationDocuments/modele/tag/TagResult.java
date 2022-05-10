@@ -10,6 +10,6 @@ public class TagResult {
 
     @Override
     public String toString() {
-        return tag.toString();
+        return String.format("Tag Result: \n%s",tag.toString());
     }
 }

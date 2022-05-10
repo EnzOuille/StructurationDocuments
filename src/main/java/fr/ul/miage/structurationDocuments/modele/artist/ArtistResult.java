@@ -6,8 +6,6 @@ public class ArtistResult {
 
     @Override
     public String toString() {
-        return "ArtistResult{" +
-                "artist=" + artist +
-                '}';
+        return String.format("Artist Result: \n%s",artist);
     }
 }

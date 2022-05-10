@@ -10,8 +10,6 @@ public class TopTagsResult {
 
     @Override
     public String toString() {
-        return "TopTagsResult{" +
-                "tags=" + tags +
-                '}';
+        return String.format("Top 10 Artists: \n\t\t%s",tags.listToString());
     }
 }

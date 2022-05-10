@@ -3,15 +3,18 @@ package fr.ul.miage.structurationDocuments.modele;
 import fr.ul.miage.structurationDocuments.modele.artist.Artist;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Artists {
 
     private ArrayList<Artist> artist;
 
+    public String listToString() {
+        return String.format("[%s]",artist.stream().map(Artist::getName).collect(Collectors.joining(", ")));
+    }
+
     @Override
     public String toString() {
-        return "Artists{" +
-                "artist=" + artist +
-                '}';
+        return String.format("Artists: %s",this.listToString());
     }
 }
