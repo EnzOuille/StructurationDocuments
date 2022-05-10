@@ -61,7 +61,7 @@ public class MainController {
     public void generate_tag_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
-            TagResult tag = new Gson().fromJson(this.apiRequestor.getTag(content), TagResult.class);
+            TagResult tag = new Gson().fromJson(this.localRequestor.getTag(content), TagResult.class);
             this.listview_first.getItems().add(tag.toString());
         }
     }
@@ -70,7 +70,8 @@ public class MainController {
         String content = input_album.getText();
         if (!content.isEmpty()) {
             content+="&artist="+input_artiste.getText();
-            AlbumResult album = new Gson().fromJson(this.apiRequestor.getAlbum(content), AlbumResult.class);
+            // Deux paramètres
+            AlbumResult album = new Gson().fromJson(this.localRequestor.getAlbum(content), AlbumResult.class);
             this.listview_first.getItems().add(album.toString());
         }
     }
@@ -78,38 +79,38 @@ public class MainController {
     public void generate_artiste_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
-            ArtistResult artist = new Gson().fromJson(this.apiRequestor.getArtist(content), ArtistResult.class);
+            ArtistResult artist = new Gson().fromJson(this.localRequestor.getArtist(content), ArtistResult.class);
             this.listview_first.getItems().add(artist.toString());
         }
     }
 
     public void generate_topTracks_results(ActionEvent actionEvent) {
-        TopTracksResult topTracks = new Gson().fromJson(this.apiRequestor.topTracks(), TopTracksResult.class);
+        TopTracksResult topTracks = new Gson().fromJson(this.localRequestor.topTracks(), TopTracksResult.class);
         this.listview_second.getItems().add(topTracks.toString());
     }
 
     public void generate_topCountryTracks_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
-            TopTracksCountryResult topTracksCountry = new Gson().fromJson(this.apiRequestor.topCountryTracks(content), TopTracksCountryResult.class);
+            TopTracksCountryResult topTracksCountry = new Gson().fromJson(this.localRequestor.topCountryTracks(content), TopTracksCountryResult.class);
             this.listview_second.getItems().add(topTracksCountry.toString());
         }
     }
 
     public void generate_topArtists_results(ActionEvent actionEvent) {
-        TopArtistsResult topArtists = new Gson().fromJson(this.apiRequestor.topArtists(), TopArtistsResult.class);
+        TopArtistsResult topArtists = new Gson().fromJson(this.localRequestor.topArtists(), TopArtistsResult.class);
         this.listview_second.getItems().add(topArtists.toString());
     }
 
     public void generate_topTags_results(ActionEvent actionEvent) {
-        TopTagsResult topTags = new Gson().fromJson(this.apiRequestor.topTags(), TopTagsResult.class);
+        TopTagsResult topTags = new Gson().fromJson(this.localRequestor.topTags(), TopTagsResult.class);
         this.listview_second.getItems().add(topTags.toString());
     }
 
     public void generate_topCountryArtists_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
-            TopArtistsCountryResult topArtistsCountry = new Gson().fromJson(this.apiRequestor.topCountryArtists(content), TopArtistsCountryResult.class);
+            TopArtistsCountryResult topArtistsCountry = new Gson().fromJson(this.localRequestor.topCountryArtists(content), TopArtistsCountryResult.class);
             this.listview_second.getItems().add(topArtistsCountry.toString());
         }
     }
