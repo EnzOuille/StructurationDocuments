@@ -1,12 +1,14 @@
 package fr.ul.miage.structurationDocuments.controller;
 
 import fr.ul.miage.structurationDocuments.App;
-import fr.ul.miage.structurationDocuments.singleton.ConnectionBDD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 
+/**
+ * The type Connection controller.
+ */
 public class ConnectionController {
 
     @FXML
@@ -15,6 +17,9 @@ public class ConnectionController {
     @FXML
     private Button user_connexion;
 
+    /**
+     * Initialize.
+     */
     public void initialize() {
         user_combobox.getItems().addAll("utilisateur","modérateur","administrateur");
     }
@@ -23,6 +28,7 @@ public class ConnectionController {
     /**
      * Permet de connecter un utilisateur à l'application
      * TODO --> lancer la connection BDD selon la selection du combobox
+     *
      * @param actionEvent évènement
      */
     public void start_connection(ActionEvent actionEvent) {

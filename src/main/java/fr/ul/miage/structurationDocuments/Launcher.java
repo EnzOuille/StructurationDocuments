@@ -1,5 +1,8 @@
 package fr.ul.miage.structurationDocuments;
 
+/**
+ * The type Launcher.
+ */
 public class Launcher {
 
     /**

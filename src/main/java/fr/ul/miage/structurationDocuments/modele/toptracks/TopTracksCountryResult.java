@@ -1,8 +1,12 @@
 package fr.ul.miage.structurationDocuments.modele.toptracks;
 
+import fr.ul.miage.structurationDocuments.modele.Result;
 import fr.ul.miage.structurationDocuments.modele.Tracks;
 
-public class TopTracksCountryResult {
+/**
+ * The type Top tracks country result.
+ */
+public class TopTracksCountryResult  extends Result {
 
     private Tracks tracks;
 

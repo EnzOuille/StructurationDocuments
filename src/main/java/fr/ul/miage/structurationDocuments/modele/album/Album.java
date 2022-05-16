@@ -1,10 +1,10 @@
 package fr.ul.miage.structurationDocuments.modele.album;
 
 import fr.ul.miage.structurationDocuments.modele.Tracks;
-import fr.ul.miage.structurationDocuments.modele.track.Track;
 
-import java.util.ArrayList;
-
+/**
+ * The type Album.
+ */
 public class Album {
 
     private String artist;
@@ -12,6 +12,11 @@ public class Album {
     private WikiAlbum wiki;
     private Tracks tracks;
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }

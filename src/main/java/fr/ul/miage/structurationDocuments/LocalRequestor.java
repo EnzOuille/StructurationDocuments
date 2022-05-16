@@ -12,6 +12,9 @@ import java.time.Instant;
 
 import static com.mongodb.client.model.Filters.eq;
 
+/**
+ * The type Local requestor.
+ */
 public class LocalRequestor {
 
     private final ApiRequestor api;
@@ -24,18 +27,30 @@ public class LocalRequestor {
     private final int QUERY_TOPARTISTS = 5;
     private final int QUERY_TOPTAGS = 6;
     private final int QUERY_TOPTRACKS = 7;
+    private final int QUERY_TRACK = 8;
 
+    /**
+     * Instantiates a new Local requestor.
+     */
     public LocalRequestor() {
         this.api = new ApiRequestor();
         this.connection = new ConnectionBDD();
     }
 
+    /**
+     * Gets detail.
+     *
+     * @param collection the collection
+     * @param param      the param
+     * @param state      the state
+     * @param type       the type
+     * @param prefix     the prefix
+     * @return the detail
+     */
     public String getDetail(MongoCollection<Document> collection, String param, int state, String type, String prefix) {
         MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
         StringBuilder stringBuilder = new StringBuilder();
-        boolean hasResult = false;
         JsonObject resJson = new JsonObject();
-        String res = "";
         resJson.addProperty("query", type + " " + param);
         resJson.addProperty("query_date", Instant.now().toString());
         Document first = collection.find(eq(prefix + ".name", param)).first();
@@ -51,6 +66,9 @@ public class LocalRequestor {
                     break;
                 case QUERY_ARTIST:
                     temp = this.api.getArtist(param);
+                    break;
+                case QUERY_TRACK:
+                    temp = this.api.getTrack(param);
                     break;
             }
             if (temp != null) {
@@ -72,6 +90,14 @@ public class LocalRequestor {
         }
     }
 
+    /**
+     * Gets top.
+     *
+     * @param collection the collection
+     * @param param      the param
+     * @param state      the state
+     * @return the top
+     */
     public String getTop(MongoCollection<Document> collection, String param, int state) {
         MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
         JsonObject resJson = new JsonObject();
@@ -106,58 +132,136 @@ public class LocalRequestor {
         return temp.toString();
     }
 
+    /**
+     * Gets tag.
+     *
+     * @param param the param
+     * @return the tag
+     */
     public String getTag(String param) {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_tag");
         return getDetail(collection, param, QUERY_TAG, "GetTag", "tag");
     }
 
+    /**
+     * Gets album.
+     *
+     * @param param the param
+     * @return the album
+     */
     public String getAlbum(String param) {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_album");
         return getDetail(collection, param, QUERY_ALBUM, "GetAlbum", "album");
     }
 
+    /**
+     * Gets artist.
+     *
+     * @param param the param
+     * @return the artist
+     */
     public String getArtist(String param) {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_artiste");
         return getDetail(collection, param, QUERY_ARTIST, "GetArtist", "artist");
     }
 
+    /**
+     * Top country tracks string.
+     *
+     * @param param the param
+     * @return the string
+     */
     public String topCountryTracks(String param) {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_topCountryTracks");
         return getTop(collection, param, QUERY_TCTRACKS);
     }
 
+    /**
+     * Top country artists string.
+     *
+     * @param param the param
+     * @return the string
+     */
     public String topCountryArtists(String param) {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_topCountryArtists");
         return getTop(collection, param, QUERY_TCARTISTS);
     }
 
+    /**
+     * Top artists string.
+     *
+     * @return the string
+     */
     public String topArtists() {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_topArtists");
         return getTop(collection, "", QUERY_TOPARTISTS);
     }
 
+    /**
+     * Top tags string.
+     *
+     * @return the string
+     */
     public String topTags() {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_topTags");
         return getTop(collection, "", QUERY_TOPTAGS);
     }
 
+    /**
+     * Top tracks string.
+     *
+     * @return the string
+     */
     public String topTracks() {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_topTracks");
         return getTop(collection, "", QUERY_TOPTRACKS);
     }
 
+    /**
+     * Format result string string.
+     *
+     * @param param the param
+     * @return the string
+     */
     public String formatResultString(String param) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonObject obj = new JsonParser().parse(param).getAsJsonObject();
         return gson.toJson(obj);
     }
 
+    /**
+     * Format result json string.
+     *
+     * @param param the param
+     * @return the string
+     */
     public String formatResultJson(JsonObject param) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson.toJson(param);
     }
 
+    /**
+     * Add to history.
+     *
+     * @param jsonObject the json object
+     */
     public void addToHistory(JsonObject jsonObject) {
 
+    }
+
+    /**
+     * Gets track.
+     *
+     * @param param the param
+     * @return the track
+     */
+    public String getTrack(String param) {
+        MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_track");
+        return getDetail(collection, param, QUERY_TRACK, "GetTrack", "track");
+    }
+
+    public void insertRecommandation(String json) {
+        MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_recommandation");
+        history.insertOne(Document.parse(json));
     }
 }

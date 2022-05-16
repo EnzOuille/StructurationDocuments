@@ -1,48 +1,101 @@
 package fr.ul.miage.structurationDocuments.controller;
 
 import com.google.gson.Gson;
-import fr.ul.miage.structurationDocuments.ApiRequestor;
 import fr.ul.miage.structurationDocuments.App;
 import fr.ul.miage.structurationDocuments.LocalRequestor;
+import fr.ul.miage.structurationDocuments.modele.Result;
 import fr.ul.miage.structurationDocuments.modele.album.AlbumResult;
 import fr.ul.miage.structurationDocuments.modele.artist.ArtistResult;
+import fr.ul.miage.structurationDocuments.modele.recommandation.Recommandation;
 import fr.ul.miage.structurationDocuments.modele.tag.TagResult;
 import fr.ul.miage.structurationDocuments.modele.topartists.TopArtistsCountryResult;
 import fr.ul.miage.structurationDocuments.modele.topartists.TopArtistsResult;
 import fr.ul.miage.structurationDocuments.modele.toptags.TopTagsResult;
 import fr.ul.miage.structurationDocuments.modele.toptracks.TopTracksCountryResult;
 import fr.ul.miage.structurationDocuments.modele.toptracks.TopTracksResult;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import fr.ul.miage.structurationDocuments.modele.track.TrackResult;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
-import java.awt.event.MouseListener;
+import java.io.IOException;
 
+
+/**
+ * The type Main controller.
+ */
 public class MainController {
 
+    /**
+     * The constant user.
+     */
     public static String user;
+    /**
+     * The Tab mod.
+     */
     public Tab tab_mod;
+    /**
+     * The Tab admin.
+     */
     public Tab tab_admin;
+    /**
+     * The Main onglet.
+     */
     public TabPane main_onglet;
-    public ListView<String> listview_first;
+    /**
+     * The Listview first.
+     */
+    public ListView<Result> listview_first;
+    /**
+     * The Input top country artist.
+     */
     public TextField input_top_country_artist;
+    /**
+     * The Input top tracks.
+     */
     public Button input_top_tracks;
+    /**
+     * The Input top country tracks.
+     */
     public TextField input_top_country_tracks;
+    /**
+     * The Input top artists.
+     */
     public Button input_top_artists;
+    /**
+     * The Input top tags.
+     */
     public Button input_top_tags;
-    public ListView<String> listview_second;
+    /**
+     * The Listview second.
+     */
+    public ListView<Result> listview_second;
+    /**
+     * The Input tag.
+     */
     public TextField input_tag;
+    /**
+     * The Input album.
+     */
     public TextField input_album;
+    /**
+     * The Input artiste.
+     */
     public TextField input_artiste;
+    /**
+     * The Input track.
+     */
+    public TextField input_track;
     private LocalRequestor localRequestor;
-    private ApiRequestor apiRequestor;
 
+    /**
+     * Initialize.
+     */
     public void initialize() {
         this.localRequestor = new LocalRequestor();
-        this.apiRequestor = new ApiRequestor();
         switch (user) {
             case "utilisateur":
                 this.main_onglet.getTabs().removeAll(tab_admin,tab_mod);
@@ -56,88 +109,135 @@ public class MainController {
 
     /**
      * Permet de se déconnecter de l'application
-     * TODO --> Déconnecter au sens de la BDD l'utilisation/admin/modo
+     *
      * @param event évènement
      */
     public void end_connection(Event event) {
         App.changeScene("/javafx/connection.fxml");
     }
 
+    /**
+     * Generate tag results.
+     *
+     * @param actionEvent the action event
+     */
     public void generate_tag_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
             TagResult tag = new Gson().fromJson(this.localRequestor.getTag(content), TagResult.class);
-            this.listview_first.getItems().add(tag.toString());
+            this.listview_first.getItems().add(tag);
         }
     }
 
-    public void generate_album_results(ActionEvent actionEvent) {
+    /**
+     * Generate album results.
+     */
+    public void generate_album_results() {
         String content = input_album.getText();
         if (!content.isEmpty()) {
             AlbumResult album = new Gson().fromJson(this.localRequestor.getAlbum(content), AlbumResult.class);
-            this.listview_first.getItems().add(album.toString());
+            this.listview_first.getItems().add(album);
         }
     }
 
+    /**
+     * Generate artiste results.
+     *
+     * @param actionEvent the action event
+     */
     public void generate_artiste_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
-            System.out.println(this.localRequestor.getArtist(content));
             ArtistResult artist = new Gson().fromJson(this.localRequestor.getArtist(content), ArtistResult.class);
-            this.listview_first.getItems().add(artist.toString());
+            this.listview_first.getItems().add(artist);
         }
     }
 
+    /**
+     * Generate top tracks results.
+     *
+     * @param actionEvent the action event
+     */
     public void generate_topTracks_results(ActionEvent actionEvent) {
         TopTracksResult topTracks = new Gson().fromJson(this.localRequestor.topTracks(), TopTracksResult.class);
-        this.listview_second.getItems().add(topTracks.toString());
+        this.listview_second.getItems().add(topTracks);
     }
 
+    /**
+     * Generate top country tracks results.
+     *
+     * @param actionEvent the action event
+     */
     public void generate_topCountryTracks_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
             TopTracksCountryResult topTracksCountry = new Gson().fromJson(this.localRequestor.topCountryTracks(content), TopTracksCountryResult.class);
-            this.listview_second.getItems().add(topTracksCountry.toString());
+            this.listview_second.getItems().add(topTracksCountry);
         }
     }
 
+    /**
+     * Generate top artists results.
+     *
+     * @param actionEvent the action event
+     */
     public void generate_topArtists_results(ActionEvent actionEvent) {
         TopArtistsResult topArtists = new Gson().fromJson(this.localRequestor.topArtists(), TopArtistsResult.class);
-        this.listview_second.getItems().add(topArtists.toString());
+        this.listview_second.getItems().add(topArtists);
     }
 
+    /**
+     * Generate top tags results.
+     *
+     * @param actionEvent the action event
+     */
     public void generate_topTags_results(ActionEvent actionEvent) {
         TopTagsResult topTags = new Gson().fromJson(this.localRequestor.topTags(), TopTagsResult.class);
-        this.listview_second.getItems().add(topTags.toString());
+        this.listview_second.getItems().add(topTags);
     }
 
+    /**
+     * Generate top country artists results.
+     *
+     * @param actionEvent the action event
+     */
     public void generate_topCountryArtists_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
             TopArtistsCountryResult topArtistsCountry = new Gson().fromJson(this.localRequestor.topCountryArtists(content), TopArtistsCountryResult.class);
-            this.listview_second.getItems().add(topArtistsCountry.toString());
+            this.listview_second.getItems().add(topArtistsCountry);
         }
     }
 
-    public void addRecomm(MouseEvent mouseEvent) {
-        System.out.println("clicked on " + listview_first.getSelectionModel().getSelectedItem());
+    /**
+     * Add recomm.
+     *
+     * @throws IOException the io exception
+     */
+    public void addRecomm() throws IOException {
+        String selected = listview_first.getSelectionModel().getSelectedItem().toString();
+        if (selected.contains("Tag") || selected.contains("Album") || selected.contains("Track")) {
+            Stage stage = new Stage();
+            stage.setTitle("Projet - Structuration Document (Recommandation)");
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/javafx/alert.fxml"));
+            DialogPane mainpage = loader.load();
+            Scene scene = new Scene(mainpage);
+            stage.setScene(scene);
+            ((AlertController) loader.getController()).setTextAlertContent(listview_first.getSelectionModel().getSelectedItem());
+            stage.show();
+        }
     }
 
-    /*public void confirmRecommandation(ActionEvent actionEvent) {
-        String type_value = this.input_type.getText();
-        String note = String.valueOf(this.combobox_note.getItems().get(this.combobox_note.getSelectionModel().getSelectedIndex()));
-        if (type_value.isEmpty() || note.isEmpty()) { return; }
-        System.out.println(this.combobox_type.getItems().get(this.combobox_type.getSelectionModel().getSelectedIndex()));
-        switch (this.combobox_type.getItems().get(this.combobox_type.getSelectionModel().getSelectedIndex())) {
-            case "tag":
-                break;
-            case "album":
-                System.out.println(type_value);
-                System.out.println(note);
-                break;
-            case "track":
-                break;
+    /**
+     * Generate track results.
+     */
+    public void generate_track_results() {
+        String content = input_track.getText();
+        if (!content.isEmpty()) {
+            TrackResult track = new Gson().fromJson(this.localRequestor.getTrack(content), TrackResult.class);
+            this.listview_first.getItems().add(track);
         }
-    }*/
+    }
 
 }

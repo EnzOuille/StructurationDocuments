@@ -4,17 +4,20 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 
+/**
+ * The type App.
+ */
 public class App extends Application {
 
     private static Stage stage;
+
+    public static String current_user;
 
     /**
      * The entry point of application.
@@ -37,6 +40,11 @@ public class App extends Application {
         App.stage=stage;
     }
 
+    /**
+     * Change scene.
+     *
+     * @param location the location
+     */
     public static void changeScene(String location) {
         try {
             FXMLLoader loader = new FXMLLoader();

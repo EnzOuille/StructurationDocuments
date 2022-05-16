@@ -1,10 +1,12 @@
 package fr.ul.miage.structurationDocuments.modele.toptags;
 
+import fr.ul.miage.structurationDocuments.modele.Result;
 import fr.ul.miage.structurationDocuments.modele.Tags;
 
-import java.util.ArrayList;
-
-public class TopTagsResult {
+/**
+ * The type Top tags result.
+ */
+public class TopTagsResult  extends Result {
 
     private Tags tags;
 

@@ -7,13 +7,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 /**
  * Outils pour HTTP
- *
  */
 public class HTTPTools {
 	// temps minimum d'une requête HTTP en ms (4 seconds)
@@ -22,13 +20,18 @@ public class HTTPTools {
 	// dernière requête HTTP
 	private long last;
 
+	/**
+	 * Instantiates a new Http tools.
+	 */
 	public HTTPTools(){
 
 	}
+
 	/**
 	 * Envoi une requête GET
+	 *
 	 * @param url de la requête
-	 * @return reponse
+	 * @return reponse json object
 	 */
 	public JsonObject sendGet(String url) {
 		// vérifie le temps écoulé depuis la requête précédente

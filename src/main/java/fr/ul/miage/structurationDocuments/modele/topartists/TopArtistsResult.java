@@ -1,8 +1,12 @@
 package fr.ul.miage.structurationDocuments.modele.topartists;
 
 import fr.ul.miage.structurationDocuments.modele.Artists;
+import fr.ul.miage.structurationDocuments.modele.Result;
 
-public class TopArtistsResult {
+/**
+ * The type Top artists result.
+ */
+public class TopArtistsResult  extends Result {
 
     private Artists artists;
 

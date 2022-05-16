@@ -1,10 +1,17 @@
 package fr.ul.miage.structurationDocuments.modele.artist;
 
 import fr.ul.miage.structurationDocuments.modele.Artists;
+import fr.ul.miage.structurationDocuments.modele.Result;
 
-public class ArtistResult {
+/**
+ * The type Artist result.
+ */
+public class ArtistResult extends Result{
 
-    private static class Results {
+    private static class Results extends Result {
+        /**
+         * The Artistmatches.
+         */
         Artists artistmatches;
 
         @Override
