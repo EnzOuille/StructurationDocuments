@@ -12,6 +12,10 @@ public class Album {
     private WikiAlbum wiki;
     private Tracks tracks;
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return String.format("Name: %s\nArtist: %s\nDuration: %s\n",name,artist,tracks.getTotalDuration());

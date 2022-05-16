@@ -12,9 +12,14 @@ import fr.ul.miage.structurationDocuments.modele.topartists.TopArtistsResult;
 import fr.ul.miage.structurationDocuments.modele.toptags.TopTagsResult;
 import fr.ul.miage.structurationDocuments.modele.toptracks.TopTracksCountryResult;
 import fr.ul.miage.structurationDocuments.modele.toptracks.TopTracksResult;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+
+import java.awt.event.MouseListener;
 
 public class MainController {
 
@@ -32,16 +37,10 @@ public class MainController {
     public TextField input_tag;
     public TextField input_album;
     public TextField input_artiste;
-    public Button btn_confirm;
-    public ComboBox<String> combobox_type;
-    public TextField input_type;
-    public ComboBox<Integer> combobox_note;
     private LocalRequestor localRequestor;
     private ApiRequestor apiRequestor;
 
     public void initialize() {
-        combobox_type.getItems().addAll("tag","album","track");
-        combobox_note.getItems().addAll(0,1,2,3,4,5,6,7,8,9,10);
         this.localRequestor = new LocalRequestor();
         this.apiRequestor = new ApiRequestor();
         switch (user) {
@@ -75,8 +74,6 @@ public class MainController {
     public void generate_album_results(ActionEvent actionEvent) {
         String content = input_album.getText();
         if (!content.isEmpty()) {
-            content+="&artist="+input_artiste.getText();
-            // Deux paramètres
             AlbumResult album = new Gson().fromJson(this.localRequestor.getAlbum(content), AlbumResult.class);
             this.listview_first.getItems().add(album.toString());
         }
@@ -85,6 +82,7 @@ public class MainController {
     public void generate_artiste_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
+            System.out.println(this.localRequestor.getArtist(content));
             ArtistResult artist = new Gson().fromJson(this.localRequestor.getArtist(content), ArtistResult.class);
             this.listview_first.getItems().add(artist.toString());
         }
@@ -121,17 +119,25 @@ public class MainController {
         }
     }
 
-    public void confirmRecommandation(ActionEvent actionEvent) {
+    public void addRecomm(MouseEvent mouseEvent) {
+        System.out.println("clicked on " + listview_first.getSelectionModel().getSelectedItem());
+    }
+
+    /*public void confirmRecommandation(ActionEvent actionEvent) {
         String type_value = this.input_type.getText();
-        String note = String.valueOf(this.combobox_note.getItems().get(0));
+        String note = String.valueOf(this.combobox_note.getItems().get(this.combobox_note.getSelectionModel().getSelectedIndex()));
         if (type_value.isEmpty() || note.isEmpty()) { return; }
-        switch (this.combobox_type.getItems().get(0)) {
+        System.out.println(this.combobox_type.getItems().get(this.combobox_type.getSelectionModel().getSelectedIndex()));
+        switch (this.combobox_type.getItems().get(this.combobox_type.getSelectionModel().getSelectedIndex())) {
             case "tag":
                 break;
             case "album":
+                System.out.println(type_value);
+                System.out.println(note);
                 break;
             case "track":
                 break;
         }
-    }
+    }*/
+
 }

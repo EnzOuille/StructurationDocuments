@@ -14,12 +14,12 @@ public class ApiRequestor {
     }
 
     public JsonObject getArtist(String param) {
-        String url = this.buildUrl("artist.getinfo", "artist=" + param);
+        String url = this.buildUrl("artist.search", "artist=" + param  + "&limit=1");
         return httpTools.sendGet(url);
     }
 
     public JsonObject getAlbum(String param) {
-        String url = this.buildUrl("album.getinfo", "album=" + param);
+        String url = this.buildUrl("album.search", "album=" + param + "&limit=1");
         return httpTools.sendGet(url);
     }
 
