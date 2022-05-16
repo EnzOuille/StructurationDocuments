@@ -30,19 +30,16 @@ public class LocalRequestor {
         this.connection = new ConnectionBDD();
     }
 
-    public String getDetail(MongoCollection<Document> collection, String param, int state, String type) {
+    public String getDetail(MongoCollection<Document> collection, String param, int state, String type, String prefix) {
         MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
         StringBuilder stringBuilder = new StringBuilder();
         boolean hasResult = false;
         JsonObject resJson = new JsonObject();
         String res = "";
-        resJson.addProperty("query", type);
+        resJson.addProperty("query", type + " " + param);
         resJson.addProperty("query_date", Instant.now().toString());
-        for (Document temp : collection.find(eq("name", param))) {
-            stringBuilder.append(temp.toJson()).append("\n");
-            hasResult = true;
-        }
-        if (!hasResult) {
+        Document first = collection.find(eq(prefix + ".name", param)).first();
+        if (first == null) {
             JsonObject temp = null;
             resJson.addProperty("type", "api");
             switch (state) {
@@ -61,15 +58,18 @@ public class LocalRequestor {
                 resJson.add("result", temp);
                 history.insertOne(Document.parse(resJson.toString()));
                 return temp.toString();
+            }else{
+                resJson.add("result", null);
+                return null;
             }
-            resJson.add("result", null);
+        }else{
+            resJson.addProperty("type", "local");
+            resJson.addProperty("result",stringBuilder.toString());
             history.insertOne(Document.parse(resJson.toString()));
-            return "Aucuns résultats";
+            System.out.println("BEFORE RETURN");
+            System.out.println(first.toJson());
+            return first.toJson();
         }
-        resJson.addProperty("type", "local");
-        resJson.addProperty("result",stringBuilder.toString());
-        history.insertOne(Document.parse(resJson.toString()));
-        return stringBuilder.toString();
     }
 
     public String getTop(MongoCollection<Document> collection, String param, int state) {
@@ -102,25 +102,23 @@ public class LocalRequestor {
         resJson.addProperty("query_date", Instant.now().toString());
         resJson.addProperty("query", res);
         resJson.add("result", temp);
-        System.out.println("Insertion");
-        System.out.println(Document.parse(resJson.toString()).toString());
         history.insertOne(Document.parse(resJson.toString()));
         return temp.toString();
     }
 
     public String getTag(String param) {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_tag");
-        return getDetail(collection, param, QUERY_TAG, "GetTag");
+        return getDetail(collection, param, QUERY_TAG, "GetTag", "tag");
     }
 
     public String getAlbum(String param) {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_album");
-        return getDetail(collection, param, QUERY_ALBUM, "GetAlbum");
+        return getDetail(collection, param, QUERY_ALBUM, "GetAlbum", "album");
     }
 
     public String getArtist(String param) {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_artiste");
-        return getDetail(collection, param, QUERY_ARTIST, "GetArtist");
+        return getDetail(collection, param, QUERY_ARTIST, "GetArtist", "artist");
     }
 
     public String topCountryTracks(String param) {
