@@ -17,6 +17,9 @@ public class App extends Application {
 
     private static Stage stage;
 
+    /**
+     * The constant current_user.
+     */
     public static String current_user;
 
     /**

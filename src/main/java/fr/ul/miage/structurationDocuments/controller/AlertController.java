@@ -17,6 +17,7 @@ import java.util.Arrays;
  */
 public class AlertController {
 
+    public static String type;
     /**
      * The Alert content.
      */
@@ -36,6 +37,9 @@ public class AlertController {
      * The Textarea commentaire.
      */
     public TextArea textarea_commentaire;
+    /**
+     * The Alert content.
+     */
     public ListView<Result> alert_content;
 
     /**
@@ -50,8 +54,9 @@ public class AlertController {
      *
      * @param content the content
      */
-    public void setTextAlertContent(Result content) {
+    public void setTextAlertContent(Result content,String type) {
         alert_content.getItems().add(0,content);
+        AlertController.type=type;
     }
 
     /**
@@ -64,14 +69,8 @@ public class AlertController {
         int note = combobox_note.getSelectionModel().getSelectedItem();
         String comment = textarea_commentaire.getText();
         Recommandation recommandation = new Recommandation(comment,note);
-        recommandation.setContent(this.alert_content.getItems().get(0).toJson());
-        if (this.alert_content.toString().contains("Track")) {
-            recommandation.setType_content("Track");
-        } else if (this.alert_content.toString().contains("Tag")) {
-            recommandation.setType_content("Tag");
-        } else if (this.alert_content.toString().contains("Album")) {
-            recommandation.setType_content("Album");
-        }
+        recommandation.setContent(this.alert_content.getItems().get(0).toJson(),type);
+
         LocalRequestor localRequestor = new LocalRequestor();
         localRequestor.insertRecommandation(recommandation.toJson());
         Node source = (Node)  actionEvent.getSource();

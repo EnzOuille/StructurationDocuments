@@ -20,20 +20,20 @@ public class HTTPTools {
 	// dernière requête HTTP
 	private long last;
 
-	/**
-	 * Instantiates a new Http tools.
-	 */
-	public HTTPTools(){
+    /**
+     * Instantiates a new Http tools.
+     */
+    public HTTPTools(){
 
 	}
 
-	/**
-	 * Envoi une requête GET
-	 *
-	 * @param url de la requête
-	 * @return reponse json object
-	 */
-	public JsonObject sendGet(String url) {
+    /**
+     * Envoi une requête GET
+     *
+     * @param url de la requête
+     * @return reponse json object
+     */
+    public JsonObject sendGet(String url) {
 		// vérifie le temps écoulé depuis la requête précédente
 		while (System.currentTimeMillis() - last < mt);
 		last = System.currentTimeMillis();

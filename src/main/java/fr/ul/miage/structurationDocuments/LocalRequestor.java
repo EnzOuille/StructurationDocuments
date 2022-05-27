@@ -4,9 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.Updates;
+import fr.ul.miage.structurationDocuments.modele.history.History;
+import fr.ul.miage.structurationDocuments.modele.recommandation.Recommandation;
 import fr.ul.miage.structurationDocuments.singleton.ConnectionBDD;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import java.time.Instant;
 
@@ -260,8 +270,49 @@ public class LocalRequestor {
         return getDetail(collection, param, QUERY_TRACK, "GetTrack", "track");
     }
 
+    /**
+     * Insert recommandation.
+     *
+     * @param json the json
+     */
     public void insertRecommandation(String json) {
         MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_recommandation");
         history.insertOne(Document.parse(json));
+    }
+
+    /**
+     * Gets history.
+     *
+     * @return the history
+     */
+    public ObservableList<History> getHistory() {
+        MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
+        FindIterable<Document> findIterable = history.find();
+        ObservableList<History> list = FXCollections.observableArrayList();
+        for (Document d : findIterable) {
+            History h = new Gson().fromJson(d.toJson(), History.class);
+            list.add(h);
+        }
+        return list;
+    }
+
+    public ObservableList<Recommandation> getRecommandation() {
+        MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_recommandation");
+        FindIterable<Document> findIterable = history.find(Filters.eq("isValid",false));
+        ObservableList<Recommandation> list = FXCollections.observableArrayList();
+        for (Document d : findIterable) {
+            Recommandation h = new Gson().fromJson(d.toJson(), Recommandation.class);
+            list.add(h);
+        }
+        return list;
+    }
+
+    public void updateRecommandation(Recommandation recommandation) {
+        MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_recommandation");
+        System.out.println(recommandation.get_id());
+        Document document = history.find(Filters.eq("_id",new ObjectId(recommandation.get_id()))).first();
+        Bson update = Updates.set("isValid",true);
+        UpdateOptions options = new UpdateOptions().upsert(true);
+        history.updateOne(document,update,options);
     }
 }

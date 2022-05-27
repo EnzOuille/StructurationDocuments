@@ -6,6 +6,7 @@ import fr.ul.miage.structurationDocuments.LocalRequestor;
 import fr.ul.miage.structurationDocuments.modele.Result;
 import fr.ul.miage.structurationDocuments.modele.album.AlbumResult;
 import fr.ul.miage.structurationDocuments.modele.artist.ArtistResult;
+import fr.ul.miage.structurationDocuments.modele.history.History;
 import fr.ul.miage.structurationDocuments.modele.recommandation.Recommandation;
 import fr.ul.miage.structurationDocuments.modele.tag.TagResult;
 import fr.ul.miage.structurationDocuments.modele.topartists.TopArtistsCountryResult;
@@ -14,11 +15,16 @@ import fr.ul.miage.structurationDocuments.modele.toptags.TopTagsResult;
 import fr.ul.miage.structurationDocuments.modele.toptracks.TopTracksCountryResult;
 import fr.ul.miage.structurationDocuments.modele.toptracks.TopTracksResult;
 import fr.ul.miage.structurationDocuments.modele.track.TrackResult;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -89,6 +95,11 @@ public class MainController {
      * The Input track.
      */
     public TextField input_track;
+    /**
+     * The History anchor.
+     */
+    public AnchorPane history_anchor;
+    public ListView recom_listview;
     private LocalRequestor localRequestor;
 
     /**
@@ -98,13 +109,46 @@ public class MainController {
         this.localRequestor = new LocalRequestor();
         switch (user) {
             case "utilisateur":
-                this.main_onglet.getTabs().removeAll(tab_admin,tab_mod);
+                this.main_onglet.getTabs().removeAll(tab_admin, tab_mod);
                 break;
             case "modérateur":
                 this.main_onglet.getTabs().removeAll(tab_admin);
                 break;
         }
         System.out.println(user);
+    }
+
+    public void generate_recommandation() {
+        this.recom_listview.getItems().clear();
+        ObservableList<Recommandation> recommandations = this.localRequestor.getRecommandation();
+        this.recom_listview.getItems().addAll(recommandations);
+    }
+
+    /**
+     * Generate history datas.
+     */
+    public void generate_history_datas() {
+        TableView<History> table_history = new TableView<>();
+        TableColumn<History, String> query
+                = new TableColumn<>("query");
+        TableColumn<History, String> query_date
+                = new TableColumn<>("query_date");
+        TableColumn<History, String> type
+                = new TableColumn<>("type");
+
+        query.setCellValueFactory(new PropertyValueFactory<>("query"));
+        query_date.setCellValueFactory(new PropertyValueFactory<>("query_date"));
+        type.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+        table_history.getColumns().addAll(query_date, query, type);
+        ObservableList<History> history = this.localRequestor.getHistory();
+        table_history.getItems().addAll(history);
+        this.history_anchor.getChildren().clear();
+        AnchorPane.setBottomAnchor(table_history, 0.0);
+        AnchorPane.setLeftAnchor(table_history, 0.0);
+        AnchorPane.setRightAnchor(table_history, 0.0);
+        AnchorPane.setTopAnchor(table_history, 0.0);
+        this.history_anchor.getChildren().add(table_history);
     }
 
     /**
@@ -217,14 +261,20 @@ public class MainController {
     public void addRecomm() throws IOException {
         String selected = listview_first.getSelectionModel().getSelectedItem().toString();
         if (selected.contains("Tag") || selected.contains("Album") || selected.contains("Track")) {
+            String type = "Track";
+            if (selected.contains("Tag")) {
+                type="Tag";
+            } else if (selected.contains("Album")) {
+                type="Album";
+            }
             Stage stage = new Stage();
             stage.setTitle("Projet - Structuration Document (Recommandation)");
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/javafx/alert.fxml"));
-            DialogPane mainpage = loader.load();
+            AnchorPane mainpage = loader.load();
             Scene scene = new Scene(mainpage);
             stage.setScene(scene);
-            ((AlertController) loader.getController()).setTextAlertContent(listview_first.getSelectionModel().getSelectedItem());
+            ((AlertController) loader.getController()).setTextAlertContent(listview_first.getSelectionModel().getSelectedItem(),type);
             stage.show();
         }
     }
@@ -240,4 +290,22 @@ public class MainController {
         }
     }
 
+    /**
+     * On selection changed.
+     */
+    public void onSelectionChangedHisto() {
+        generate_history_datas();
+    }
+
+    public void onSelectionChangedRecom() {
+        generate_recommandation();
+    }
+
+    public void onClickedValidateRecom() {
+        Recommandation recommandation = (Recommandation) recom_listview.getSelectionModel().getSelectedItem();
+        if (recommandation != null) {
+            this.localRequestor.updateRecommandation(recommandation);
+            generate_recommandation();
+        }
+    }
 }

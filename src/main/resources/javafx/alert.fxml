@@ -3,10 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -15,57 +13,58 @@
 <?import javafx.scene.text.Font?>
 
 
-<DialogPane prefHeight="285.0" prefWidth="494.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.ul.miage.structurationDocuments.controller.AlertController">
-   <header>
-      <Label alignment="CENTER" text="Emettre une recommandation">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-   </header>
-   <content>
-      <AnchorPane prefHeight="184.0" prefWidth="395.0">
-         <children>
-            <BorderPane layoutX="20.0" layoutY="20.0" prefHeight="236.0" prefWidth="395.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <top>
-                  <VBox alignment="CENTER" prefHeight="107.0" prefWidth="375.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <ScrollPane prefHeight="200.0" prefWidth="474.0">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="459.0">
+<AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.ul.miage.structurationDocuments.controller.AlertController">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <Label alignment="CENTER" text="Emettre une recommandation" BorderPane.alignment="CENTER">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+         </top>
+         <center>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <BorderPane layoutX="20.0" layoutY="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <bottom>
+                        <FlowPane alignment="CENTER" BorderPane.alignment="CENTER">
+                           <children>
+                              <Button fx:id="confirm_content" alignment="BOTTOM_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#send_recom" text="Confirmer">
+                                 <FlowPane.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </FlowPane.margin>
+                              </Button>
+                              <Button fx:id="cancel_content" alignment="BOTTOM_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#cancel_recom" text="Annuler">
+                                 <FlowPane.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </FlowPane.margin>
+                              </Button>
+                           </children>
+                        </FlowPane>
+                     </bottom>
+                     <center>
+                        <VBox alignment="CENTER" prefHeight="107.0" prefWidth="375.0" BorderPane.alignment="CENTER">
+                           <children>
+                            <AnchorPane minHeight="0.0" minWidth="0.0">
                                  <children>
-                                    <ListView fx:id="alert_content" prefHeight="200.0" prefWidth="462.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <ListView fx:id="alert_content" prefWidth="700.0" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
-                          </content>
-                        </ScrollPane>
-                        <TextArea fx:id="textarea_commentaire" prefHeight="200.0" prefWidth="200.0" />
-                        <ComboBox fx:id="combobox_note" prefWidth="150.0" promptText="Selectionner note ...">
-                           <VBox.margin>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </VBox.margin>
-                        </ComboBox>
-                     </children>
-                  </VBox>
-               </top>
-               <bottom>
-                  <FlowPane alignment="CENTER" prefHeight="128.0" prefWidth="474.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <Button fx:id="confirm_content" alignment="BOTTOM_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#send_recom" text="Confirmer">
-                           <FlowPane.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </FlowPane.margin>
-                        </Button>
-                        <Button fx:id="cancel_content" alignment="BOTTOM_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#cancel_recom" text="Annuler">
-                           <FlowPane.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </FlowPane.margin>
-                        </Button>
-                     </children>
-                  </FlowPane>
-               </bottom>
-            </BorderPane>
-         </children>
-      </AnchorPane>
-   </content>
-</DialogPane>
+                              <Label text="Saisir commentaire : " />
+                              <TextArea fx:id="textarea_commentaire" prefHeight="200.0" prefWidth="200.0" />
+                              <ComboBox fx:id="combobox_note" prefWidth="150.0" promptText="Selectionner note ...">
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </VBox.margin>
+                              </ComboBox>
+                           </children>
+                        </VBox>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>
