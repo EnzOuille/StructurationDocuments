@@ -25,4 +25,8 @@ public class Tags {
     public String toString() {
         return String.format("Tags: %s",this.listToString());
     }
+
+    public ArrayList<Tag> getTag() {
+        return tag;
+    }
 }

@@ -26,7 +26,7 @@ public class ApiRequestor {
      * @return the artist
      */
     public JsonObject getArtist(String param) {
-        String url = this.buildUrl("artist.search", "artist=" + param  + "&limit=1");
+        String url = this.buildUrl("artist.search", "artist=" + param.replace(" ", "%20")  + "&limit=1");
         return httpTools.sendGet(url);
     }
 
@@ -37,7 +37,7 @@ public class ApiRequestor {
      * @return the album
      */
     public JsonObject getAlbum(String param) {
-        String url = this.buildUrl("album.search", "album=" + param + "&limit=1");
+        String url = this.buildUrl("album.search", "album=" + param.replace(" ", "%20") + "&limit=1");
         return httpTools.sendGet(url);
     }
 
@@ -48,7 +48,7 @@ public class ApiRequestor {
      * @return the tag
      */
     public JsonObject getTag(String param) {
-        String url = this.buildUrl("tag.getinfo", "tag=" + param);
+        String url = this.buildUrl("tag.getinfo", "tag=" + param.replace(" ", "%20"));
         return httpTools.sendGet(url);
     }
 
@@ -59,7 +59,7 @@ public class ApiRequestor {
      * @return the track
      */
     public JsonObject getTrack(String param) {
-        String url = this.buildUrl("track.search", "track=" + param + "&limit=1");
+        String url = this.buildUrl("track.search", "track=" + param.replace(" ", "%20") + "&limit=1");
         return httpTools.sendGet(url);
     }
 
@@ -70,7 +70,7 @@ public class ApiRequestor {
      * @return the json object
      */
     public JsonObject topCountryTracks(String param) {
-        String url = this.buildUrl("geo.getTopTracks", "country=" + param + "&limit=10");
+        String url = this.buildUrl("geo.getTopTracks", "country=" + param.replace(" ", "%20") + "&limit=10");
         return httpTools.sendGet(url);
     }
 
@@ -81,7 +81,7 @@ public class ApiRequestor {
      * @return the json object
      */
     public JsonObject topCountryArtists(String param) {
-        String url = this.buildUrl("geo.getTopArtists", "country=" + param + "&limit=10");
+        String url = this.buildUrl("geo.getTopArtists", "country=" + param.replace(" ", "%20") + "&limit=10");
         return httpTools.sendGet(url);
     }
 

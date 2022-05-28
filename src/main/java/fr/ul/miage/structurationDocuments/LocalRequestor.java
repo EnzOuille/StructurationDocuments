@@ -7,10 +7,20 @@ import com.google.gson.JsonParser;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
+import fr.ul.miage.structurationDocuments.modele.Result;
+import fr.ul.miage.structurationDocuments.modele.artist.Artist;
 import fr.ul.miage.structurationDocuments.modele.history.History;
 import fr.ul.miage.structurationDocuments.modele.recommandation.Recommandation;
+import fr.ul.miage.structurationDocuments.modele.tag.Tag;
+import fr.ul.miage.structurationDocuments.modele.topartists.TopArtistsCountryResult;
+import fr.ul.miage.structurationDocuments.modele.topartists.TopArtistsResult;
+import fr.ul.miage.structurationDocuments.modele.toptags.TopTagsResult;
+import fr.ul.miage.structurationDocuments.modele.toptracks.TopTracksCountryResult;
+import fr.ul.miage.structurationDocuments.modele.toptracks.TopTracksResult;
+import fr.ul.miage.structurationDocuments.modele.track.Track;
 import fr.ul.miage.structurationDocuments.singleton.ConnectionBDD;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +31,7 @@ import org.bson.types.ObjectId;
 import java.time.Instant;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.regex;
 
 /**
  * The type Local requestor.
@@ -59,7 +70,6 @@ public class LocalRequestor {
      */
     public String getDetail(MongoCollection<Document> collection, String param, int state, String type, String prefix) {
         MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
-        StringBuilder stringBuilder = new StringBuilder();
         JsonObject resJson = new JsonObject();
         resJson.addProperty("query", type + " " + param);
         resJson.addProperty("query_date", Instant.now().toString());
@@ -86,60 +96,18 @@ public class LocalRequestor {
                 resJson.add("result", temp);
                 history.insertOne(Document.parse(resJson.toString()));
                 return temp.toString();
-            }else{
+            } else {
                 resJson.add("result", null);
                 return null;
             }
-        }else{
+        } else {
             resJson.addProperty("type", "local");
-            resJson.addProperty("result",stringBuilder.toString());
+            resJson.add("result", new JsonParser().parse(first.toJson()));
             history.insertOne(Document.parse(resJson.toString()));
             System.out.println("BEFORE RETURN");
             System.out.println(first.toJson());
             return first.toJson();
         }
-    }
-
-    /**
-     * Gets top.
-     *
-     * @param collection the collection
-     * @param param      the param
-     * @param state      the state
-     * @return the top
-     */
-    public String getTop(MongoCollection<Document> collection, String param, int state) {
-        MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
-        JsonObject resJson = new JsonObject();
-        JsonObject temp = null;
-        String res = "";
-        switch (state) {
-            case QUERY_TCTRACKS:
-                temp = this.api.topCountryTracks(param);
-                res = "Query TopCountryTracks : " + param;
-                break;
-            case QUERY_TCARTISTS:
-                temp = this.api.topCountryArtists(param);
-                res = "Query TopCountryArtists : " + param;
-                break;
-            case QUERY_TOPARTISTS:
-                temp = this.api.topArtists();
-                res = "Query TopArtists";
-                break;
-            case QUERY_TOPTAGS:
-                temp = this.api.topTags();
-                res = "Query TopTags";
-                break;
-            case QUERY_TOPTRACKS:
-                temp = this.api.topTracks();
-                res = "Query TopTracks";
-                break;
-        }
-        resJson.addProperty("query_date", Instant.now().toString());
-        resJson.addProperty("query", res);
-        resJson.add("result", temp);
-        history.insertOne(Document.parse(resJson.toString()));
-        return temp.toString();
     }
 
     /**
@@ -181,9 +149,38 @@ public class LocalRequestor {
      * @param param the param
      * @return the string
      */
-    public String topCountryTracks(String param) {
-        MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_topCountryTracks");
-        return getTop(collection, param, QUERY_TCTRACKS);
+    public Result topCountryTracks(String param) {
+        MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
+        JsonObject tempJson = new JsonObject();
+        Bson sort = Sorts.descending("query_date");
+        JsonObject temp = this.api.topCountryTracks(param);
+        String res = "Query TopCountryTracks : " + param;
+        MongoCollection<Document> topCT = connection.getDatabase().getCollection("GECCT_topCountryTracks");
+        tempJson.addProperty("query_date", Instant.now().toString());
+        tempJson.addProperty("query", res);
+        tempJson.add("result", temp);
+        String pattern = ".?TopCountryTracks : " + param + ".?";
+        Document first = topCT.find(regex("query", pattern)).sort(sort).first();
+        topCT.insertOne(Document.parse(tempJson.toString()));
+        history.insertOne(Document.parse(tempJson.toString()));
+        TopTracksCountryResult topTracksCountry1 = new Gson().fromJson(temp, TopTracksCountryResult.class);
+        if (first != null) {
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(first.toJson(), JsonObject.class);
+            TopTracksCountryResult topTracksCountry2 = new Gson().fromJson(jsonObject.get("result"), TopTracksCountryResult.class);
+            for (int i = 0; i < 10; i++) {
+                Track temp1 = topTracksCountry1.getTracks().getTrack().get(i);
+                Track temp2 = topTracksCountry2.getTracks().getTrack().get(i);
+                if (temp1.getName().equals(temp2.getName())) {
+                    topTracksCountry1.getTracks().getTrack().get(i).setName(temp1.getName() + " (STAY)");
+                } else {
+                    topTracksCountry1.getTracks().getTrack().get(i).setName(temp1.getName() + " (NEW)");
+                }
+            }
+            return topTracksCountry1;
+        } else {
+            return topTracksCountry1;
+        }
     }
 
     /**
@@ -192,9 +189,38 @@ public class LocalRequestor {
      * @param param the param
      * @return the string
      */
-    public String topCountryArtists(String param) {
-        MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_topCountryArtists");
-        return getTop(collection, param, QUERY_TCARTISTS);
+    public Result topCountryArtists(String param) {
+        MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
+        JsonObject tempJson = new JsonObject();
+        Bson sort = Sorts.descending("query_date");
+        JsonObject temp = this.api.topCountryArtists(param);
+        String res = "Query TopCountryArtists : " + param;
+        MongoCollection<Document> topCA = connection.getDatabase().getCollection("GECCT_topCountryArtists");
+        tempJson.addProperty("query_date", Instant.now().toString());
+        tempJson.addProperty("query", res);
+        tempJson.add("result", temp);
+        String pattern = ".?TopCountryArtists : " + param + ".?";
+        Document first = topCA.find(regex("query", pattern)).sort(sort).first();
+        topCA.insertOne(Document.parse(tempJson.toString()));
+        history.insertOne(Document.parse(tempJson.toString()));
+        TopArtistsCountryResult topArtistsCountry1 = new Gson().fromJson(temp, TopArtistsCountryResult.class);
+        if (first != null) {
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(first.toJson(), JsonObject.class);
+            TopArtistsCountryResult topArtistsCountry2 = new Gson().fromJson(jsonObject.get("result"), TopArtistsCountryResult.class);
+            for (int i = 0; i < 10; i++) {
+                Artist temp1 = topArtistsCountry1.getTopartists().getArtist().get(i);
+                Artist temp2 = topArtistsCountry2.getTopartists().getArtist().get(i);
+                if (temp1.getName().equals(temp2.getName())) {
+                    topArtistsCountry1.getTopartists().getArtist().get(i).setName(temp1.getName() + " (STAY)");
+                } else {
+                    topArtistsCountry2.getTopartists().getArtist().get(i).setName(temp1.getName() + " (NEW)");
+                }
+            }
+            return topArtistsCountry1;
+        } else {
+            return topArtistsCountry1;
+        }
     }
 
     /**
@@ -202,9 +228,38 @@ public class LocalRequestor {
      *
      * @return the string
      */
-    public String topArtists() {
-        MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_topArtists");
-        return getTop(collection, "", QUERY_TOPARTISTS);
+    public Result topArtists() {
+        MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
+        JsonObject tempJson = new JsonObject();
+        Bson sort = Sorts.descending("query_date");
+        JsonObject temp = this.api.topArtists();
+        String res = "Query TopArtists";
+        MongoCollection<Document> topA = connection.getDatabase().getCollection("GECCT_topArtists");
+        tempJson.addProperty("query_date", Instant.now().toString());
+        tempJson.addProperty("query", res);
+        tempJson.add("result", temp);
+        String pattern = ".?TopArtists.?";
+        Document first = topA.find(regex("query", pattern)).sort(sort).first();
+        topA.insertOne(Document.parse(tempJson.toString()));
+        history.insertOne(Document.parse(tempJson.toString()));
+        TopArtistsResult topArtists1 = new Gson().fromJson(temp, TopArtistsResult.class);
+        if (first != null) {
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(first.toJson(), JsonObject.class);
+            TopArtistsResult topArtists2 = new Gson().fromJson(jsonObject.get("result"), TopArtistsResult.class);
+            for (int i = 0; i < 10; i++) {
+                Artist temp1 = topArtists1.getArtists().getArtist().get(i);
+                Artist temp2 = topArtists2.getArtists().getArtist().get(i);
+                if (temp1.getName().equals(temp2.getName())) {
+                    topArtists1.getArtists().getArtist().get(i).setName(temp1.getName() + " (STAY)");
+                } else {
+                    topArtists2.getArtists().getArtist().get(i).setName(temp1.getName() + " (NEW)");
+                }
+            }
+            return topArtists1;
+        } else {
+            return topArtists1;
+        }
     }
 
     /**
@@ -212,9 +267,38 @@ public class LocalRequestor {
      *
      * @return the string
      */
-    public String topTags() {
-        MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_topTags");
-        return getTop(collection, "", QUERY_TOPTAGS);
+    public Result topTags() {
+        MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
+        JsonObject tempJson = new JsonObject();
+        Bson sort = Sorts.descending("query_date");
+        JsonObject temp = this.api.topTags();
+        String res = "Query TopTags";
+        MongoCollection<Document> topTags = connection.getDatabase().getCollection("GECCT_topTags");
+        tempJson.addProperty("query_date", Instant.now().toString());
+        tempJson.addProperty("query", res);
+        tempJson.add("result", temp);
+        String pattern = ".?TopTags.?";
+        Document first = topTags.find(regex("query", pattern)).sort(sort).first();
+        topTags.insertOne(Document.parse(tempJson.toString()));
+        history.insertOne(Document.parse(tempJson.toString()));
+        TopTagsResult topTags1 = new Gson().fromJson(temp, TopTagsResult.class);
+        if (first != null) {
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(first.toJson(), JsonObject.class);
+            TopTagsResult topTags2 = new Gson().fromJson(jsonObject.get("result"), TopTagsResult.class);
+            for (int i = 0; i < 10; i++) {
+                Tag temp1 = topTags1.getTags().getTag().get(i);
+                Tag temp2 = topTags2.getTags().getTag().get(i);
+                if (temp1.getName().equals(temp2.getName())) {
+                    topTags1.getTags().getTag().get(i).setName(temp1.getName() + " (STAY)");
+                } else {
+                    topTags2.getTags().getTag().get(i).setName(temp1.getName() + " (NEW)");
+                }
+            }
+            return topTags1;
+        } else {
+            return topTags1;
+        }
     }
 
     /**
@@ -222,9 +306,39 @@ public class LocalRequestor {
      *
      * @return the string
      */
-    public String topTracks() {
+    public Result topTracks() {
         MongoCollection<Document> collection = connection.getDatabase().getCollection("GECCT_topTracks");
-        return getTop(collection, "", QUERY_TOPTRACKS);
+        MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_history");
+        JsonObject tempJson = new JsonObject();
+        Bson sort = Sorts.descending("query_date");
+        JsonObject temp = this.api.topTracks();
+        String res = "Query TopTracks";
+        MongoCollection<Document> topTracks = connection.getDatabase().getCollection("GECCT_topTracks");
+        tempJson.addProperty("query_date", Instant.now().toString());
+        tempJson.addProperty("query", res);
+        tempJson.add("result", temp);
+        String pattern = ".?TopTracks.?";
+        Document first = topTracks.find(regex("query", pattern)).sort(sort).first();
+        topTracks.insertOne(Document.parse(tempJson.toString()));
+        history.insertOne(Document.parse(tempJson.toString()));
+        TopTracksResult topTracks1 = new Gson().fromJson(temp, TopTracksResult.class);
+        if (first != null) {
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(first.toJson(), JsonObject.class);
+            TopTracksResult topTracks2 = new Gson().fromJson(jsonObject.get("result"), TopTracksResult.class);
+            for (int i = 0; i < 10; i++) {
+                Track temp1 = topTracks1.getTracks().getTrack().get(i);
+                Track temp2 = topTracks2.getTracks().getTrack().get(i);
+                if (temp1.getName().equals(temp2.getName())) {
+                    topTracks1.getTracks().getTrack().get(i).setName(temp1.getName() + " (STAY)");
+                } else {
+                    topTracks2.getTracks().getTrack().get(i).setName(temp1.getName() + " (NEW)");
+                }
+            }
+            return topTracks1;
+        } else {
+            return topTracks1;
+        }
     }
 
     /**
@@ -298,7 +412,7 @@ public class LocalRequestor {
 
     public ObservableList<Recommandation> getRecommandation() {
         MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_recommandation");
-        FindIterable<Document> findIterable = history.find(Filters.eq("isValid",false));
+        FindIterable<Document> findIterable = history.find(Filters.eq("isValid", false));
         ObservableList<Recommandation> list = FXCollections.observableArrayList();
         for (Document d : findIterable) {
             Recommandation h = new Gson().fromJson(d.toJson(), Recommandation.class);
@@ -310,9 +424,11 @@ public class LocalRequestor {
     public void updateRecommandation(Recommandation recommandation) {
         MongoCollection<Document> history = connection.getDatabase().getCollection("GECCT_recommandation");
         System.out.println(recommandation.get_id());
-        Document document = history.find(Filters.eq("_id",new ObjectId(recommandation.get_id()))).first();
-        Bson update = Updates.set("isValid",true);
+        Document document = history.find(Filters.eq("_id", new ObjectId(recommandation.get_id()))).first();
+        Bson update = Updates.set("isValid", true);
         UpdateOptions options = new UpdateOptions().upsert(true);
-        history.updateOne(document,update,options);
+        history.updateOne(document, update, options);
     }
+
+
 }

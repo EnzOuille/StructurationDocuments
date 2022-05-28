@@ -203,7 +203,7 @@ public class MainController {
      * @param actionEvent the action event
      */
     public void generate_topTracks_results(ActionEvent actionEvent) {
-        TopTracksResult topTracks = new Gson().fromJson(this.localRequestor.topTracks(), TopTracksResult.class);
+        TopTracksResult topTracks = (TopTracksResult) this.localRequestor.topTracks();
         this.listview_second.getItems().add(topTracks);
     }
 
@@ -215,7 +215,7 @@ public class MainController {
     public void generate_topCountryTracks_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
-            TopTracksCountryResult topTracksCountry = new Gson().fromJson(this.localRequestor.topCountryTracks(content), TopTracksCountryResult.class);
+            TopTracksCountryResult topTracksCountry = (TopTracksCountryResult) this.localRequestor.topCountryTracks(content);
             this.listview_second.getItems().add(topTracksCountry);
         }
     }
@@ -226,7 +226,7 @@ public class MainController {
      * @param actionEvent the action event
      */
     public void generate_topArtists_results(ActionEvent actionEvent) {
-        TopArtistsResult topArtists = new Gson().fromJson(this.localRequestor.topArtists(), TopArtistsResult.class);
+        TopArtistsResult topArtists = (TopArtistsResult) this.localRequestor.topArtists();
         this.listview_second.getItems().add(topArtists);
     }
 
@@ -236,7 +236,7 @@ public class MainController {
      * @param actionEvent the action event
      */
     public void generate_topTags_results(ActionEvent actionEvent) {
-        TopTagsResult topTags = new Gson().fromJson(this.localRequestor.topTags(), TopTagsResult.class);
+        TopTagsResult topTags = (TopTagsResult) this.localRequestor.topTags();
         this.listview_second.getItems().add(topTags);
     }
 
@@ -248,7 +248,7 @@ public class MainController {
     public void generate_topCountryArtists_results(ActionEvent actionEvent) {
         String content = ((TextField)actionEvent.getSource()).getText();
         if (!content.isEmpty()) {
-            TopArtistsCountryResult topArtistsCountry = new Gson().fromJson(this.localRequestor.topCountryArtists(content), TopArtistsCountryResult.class);
+            TopArtistsCountryResult topArtistsCountry = (TopArtistsCountryResult) this.localRequestor.topCountryArtists(content);
             this.listview_second.getItems().add(topArtistsCountry);
         }
     }

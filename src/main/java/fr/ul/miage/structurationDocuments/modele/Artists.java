@@ -25,4 +25,9 @@ public class Artists {
     public String toString() {
         return String.format("Artists: %s",this.listToString());
     }
+
+    public ArrayList<Artist> getArtist() {
+        return artist;
+    }
+
 }

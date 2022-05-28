@@ -33,4 +33,8 @@ public class Track {
                 ", duration=" + duration +
                 '}';
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

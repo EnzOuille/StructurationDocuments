@@ -12,6 +12,14 @@ public class TopArtistsResult  extends Result {
 
     @Override
     public String toString() {
-        return String.format("Top 10 Artists: \n\t\t%s",artists.listToString());
+        try{
+            return String.format("Top 10 Artists: \n\t\t%s",artists.listToString());
+        } catch (NullPointerException e){
+            return "Nothing";
+        }
+    }
+
+    public Artists getArtists() {
+        return artists;
     }
 }

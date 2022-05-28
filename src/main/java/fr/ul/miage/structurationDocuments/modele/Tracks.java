@@ -34,4 +34,8 @@ public class Tracks {
     public String toString() {
         return String.format("Tracks: %s",this.listToString());
     }
+
+    public ArrayList<Track> getTrack() {
+        return track;
+    }
 }

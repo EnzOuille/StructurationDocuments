@@ -23,4 +23,8 @@ public class Artist {
     public String toString() {
         return String.format("Artist: %s\nSimilar: %s\n",name,similar.listToString());
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

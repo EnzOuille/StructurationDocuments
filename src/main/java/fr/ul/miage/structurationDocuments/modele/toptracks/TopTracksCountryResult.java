@@ -6,12 +6,20 @@ import fr.ul.miage.structurationDocuments.modele.Tracks;
 /**
  * The type Top tracks country result.
  */
-public class TopTracksCountryResult  extends Result {
+public class TopTracksCountryResult extends Result {
 
     private Tracks tracks;
 
     @Override
     public String toString() {
-        return String.format("Top 10 Tracks by Country: \n\t\t%s",tracks.listToString());
+        try {
+            return String.format("Top 10 Tracks by Country: \n\t\t%s", tracks.listToString());
+        } catch (NullPointerException e) {
+            return "Nothing";
+        }
+    }
+
+    public Tracks getTracks() {
+        return tracks;
     }
 }
