@@ -6,6 +6,10 @@ package fr.ul.miage.structurationDocuments.modele.track;
 public class Track {
 
     private String name;
+
+    private String url;
+
+    private String listeners;
     private int duration;
 
     /**
@@ -24,6 +28,14 @@ public class Track {
      */
     public String getName() {
         return name;
+    }
+
+    public String getListeners() {
+        return listeners;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     @Override

@@ -13,7 +13,7 @@ public class TopTracksResult  extends Result {
     @Override
     public String toString() {
         try{
-            return String.format("Top 10 Tracks: \n\t\t%s",tracks.listToString());
+            return String.format("Top 10 Tracks: \n%s",tracks.listToString());
         }catch (NullPointerException e){
             return "Nothing";
         }

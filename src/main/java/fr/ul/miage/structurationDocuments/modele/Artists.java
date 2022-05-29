@@ -18,7 +18,7 @@ public class Artists {
      * @return the string
      */
     public String listToString() {
-        return String.format("[%s]",artist.stream().map(Artist::getName).collect(Collectors.joining(", ")));
+        return String.format("%s",artist.stream().map((x) -> String.format("\tNom: %s\n\tNombre d'écoutes: %s\n\tLien: %s",x.getName(),x.getListeners(),x.getUrl())).collect(Collectors.joining(", ")));
     }
 
     @Override

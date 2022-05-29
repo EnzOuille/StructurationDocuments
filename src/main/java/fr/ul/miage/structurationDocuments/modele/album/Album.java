@@ -10,6 +10,8 @@ public class Album {
     private String artist;
     private String name;
     private WikiAlbum wiki;
+
+    private String url;
     private Tracks tracks;
 
     /**
@@ -19,6 +21,14 @@ public class Album {
      */
     public String getName() {
         return name;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     @Override

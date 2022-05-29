@@ -8,6 +8,10 @@ import fr.ul.miage.structurationDocuments.modele.Artists;
 public class Artist {
 
     private String name;
+
+    private String listeners;
+
+    private String url;
     private Artists similar;
 
     /**
@@ -17,6 +21,14 @@ public class Artist {
      */
     public String getName() {
         return name;
+    }
+
+    public String getListeners() {
+        return listeners;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     @Override

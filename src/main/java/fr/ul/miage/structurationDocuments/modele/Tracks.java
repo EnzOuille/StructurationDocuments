@@ -27,7 +27,7 @@ public class Tracks {
      * @return the string
      */
     public String listToString() {
-        return String.format("[%s]",track.stream().map(Track::getName).collect(Collectors.joining(", ")));
+        return String.format("\t%s",track.stream().map((x) -> String.format("Nom: %s\n\tNombre d'écoutes: %s\n\tLien: %s\n",x.getName(),x.getListeners(),x.getUrl())).collect(Collectors.joining("\n")));
     }
 
     @Override
