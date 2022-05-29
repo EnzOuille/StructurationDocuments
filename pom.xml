@@ -27,7 +27,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>Launcher</mainClass>
+                            <mainClass>${project.main.classname}</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -71,7 +71,7 @@
                                     <platforms>
                                         <platform>windows</platform>
                                     </platforms>
-                                    <mainClass>${project.main.classname}</mainClass>
+                                    <mainClass>fr.ul.miage.structurationDocuments.Launcher</mainClass>
                                     <id>${project.bin.appname}</id>
                                 </program>
                             </programs>
